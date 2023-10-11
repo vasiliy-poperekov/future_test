@@ -1,0 +1,363 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FutureTest Services API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/",
+            "description": "Returns App API"
+        }
+    ],
+    "paths": {
+        "/": {},
+        "/v1/notebook": {
+            "get": {
+                "tags": [
+                    "Notebook"
+                ],
+                "description": "Returns page with list of contacts",
+                "operationId": "getAllContacts",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactList"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Add a new contact to the store",
+                "operationId": "createContact",
+                "requestBody": {
+                    "description": "Contact object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateContactRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invalid input"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/v1/notebook/{id}": {
+            "get": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Find contact by id",
+                "description": "Returns a single contac",
+                "operationId": "getContactById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of contact to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Contact"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Contact not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Update an existing contact.",
+                "operationId": "updateContact",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of contact to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Contact object that needs to be updated to the store",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateContactRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Contact not found"
+                    },
+                    "200": {
+                        "description": "Contact was updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Deletes a contact",
+                "operationId": "deleteContact",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Contact id to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact was deleted"
+                    },
+                    "404": {
+                        "description": "No contact with such id"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateContactRequest": {
+                "title": "Create contact request",
+                "description": "Create contact request body data",
+                "required": [
+                    "fullname",
+                    "phone_number",
+                    "email"
+                ],
+                "properties": {
+                    "fullname": {
+                        "title": "fullname",
+                        "description": "Full name of contact",
+                        "type": "string",
+                        "example": "Ivanov Ivan Ivanovich"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Name of contacts company",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "Phone number of contact",
+                        "type": "string",
+                        "example": "+79996669966"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "Email of contact",
+                        "type": "string",
+                        "example": "user@mail.com"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "Date of contacts birth",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                    },
+                    "image": {
+                        "title": "image",
+                        "description": "Image of contact",
+                        "type": "file",
+                        "format": "file"
+                    }
+                },
+                "type": "object"
+            },
+            "Contact": {
+                "title": "Contact",
+                "description": "Contact model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "fullname": {
+                        "title": "fullname",
+                        "description": "Full contacts name",
+                        "type": "string",
+                        "example": "Ivanov Ivan Ivanovich"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Name of contacts company",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "Phone number of contact",
+                        "type": "string",
+                        "example": "+79996669966"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "Email of contact",
+                        "type": "string",
+                        "example": "user@mail.com"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "Date of contacts birth",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                    },
+                    "photo_url": {
+                        "title": "photo_url",
+                        "description": "Url of contact photo",
+                        "type": "string",
+                        "example": "images/1353294.jpg"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Contact"
+                }
+            },
+            "ContactList": {
+                "title": "ContactList",
+                "description": "List of contacts",
+                "properties": {
+                    "data": {
+                        "title": "Data",
+                        "description": "Data wrapper",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Contact"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ContactList"
+                }
+            },
+            "UpdateContactRequest": {
+                "title": "Update contact request",
+                "description": "Update contact request body data",
+                "properties": {
+                    "fullname": {
+                        "title": "fullname",
+                        "description": "Full name of contact",
+                        "type": "string",
+                        "example": "Petrov Petr Petrovich"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Name of contacts company",
+                        "type": "string",
+                        "example": "Past"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "Phone number of contact",
+                        "type": "string",
+                        "example": "+78888888888"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "Email of contact",
+                        "type": "string",
+                        "example": "newuser@mail.com"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "Date of contacts birth",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2002-02-02"
+                    },
+                    "image": {
+                        "title": "image",
+                        "description": "Image of contact",
+                        "type": "file",
+                        "format": "file"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
